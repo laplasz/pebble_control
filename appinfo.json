@@ -1,0 +1,19 @@
+{
+    "appKeys": {},
+    "capabilities": [
+        ""
+    ],
+    "companyName": "balazs.barcsik@gmail.com",
+    "longName": "Phone Control 2",
+    "projectType": "native",
+    "resources": {
+        "media": []
+    },
+    "shortName": "Phone Control 2",
+    "uuid": "6954047f-48b4-467c-815e-f2fe666b1388",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
