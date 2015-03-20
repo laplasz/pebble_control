@@ -3,16 +3,38 @@
 static Window *window;
 static TextLayer *text_layer;
 
+enum {
+    KEY_BUTTON_EVENT = 0,
+    BUTTON_EVENT_UP = 1,
+    BUTTON_EVENT_DOWN = 2,
+    BUTTON_EVENT_SELECT = 3
+};
+
+void send_int(uint8_t key, uint8_t cmd)
+{
+    DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+      
+    Tuplet value = TupletInteger(key, cmd);
+    dict_write_tuplet(iter, &value);
+      
+    app_message_outbox_send();
+}
+
+
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(text_layer, "Select");
+  send_int(KEY_BUTTON_EVENT, BUTTON_EVENT_SELECT);
 }
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(text_layer, "Up");
+  send_int(KEY_BUTTON_EVENT, BUTTON_EVENT_UP);
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
   text_layer_set_text(text_layer, "Down");
+  send_int(KEY_BUTTON_EVENT, BUTTON_EVENT_DOWN);
 }
 
 static void click_config_provider(void *context) {
@@ -35,6 +57,11 @@ static void window_unload(Window *window) {
   text_layer_destroy(text_layer);
 }
 
+static void in_received_handler(DictionaryIterator *iter, void *context)
+{
+    
+}
+
 static void init(void) {
   window = window_create();
   window_set_click_config_provider(window, click_config_provider);
@@ -44,6 +71,9 @@ static void init(void) {
   });
   const bool animated = true;
   window_stack_push(window, animated);
+  //Register AppMessage events
+  app_message_register_inbox_received(in_received_handler);          
+  app_message_open(512, 512);    //Large input and output buffer sizes
 }
 
 static void deinit(void) {

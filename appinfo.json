@@ -9,6 +9,7 @@
     "resources": {
         "media": []
     },
+    "sdkVersion": "2",
     "shortName": "Phone Control 2",
     "uuid": "6954047f-48b4-467c-815e-f2fe666b1388",
     "versionCode": 1,
