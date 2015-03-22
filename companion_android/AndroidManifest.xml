@@ -4,7 +4,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="14"
         android:targetSdkVersion="19" />
 
     <application
@@ -21,6 +21,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".MyAccessibilityService"
+        android:label="@string/app_name"
+        android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+      <intent-filter>
+        <action android:name="android.accessibilityservice.AccessibilityService" />
+      </intent-filter>
+    </service>
+    <receiver android:name=".MyBroadCastReceiver" >
+    <intent-filter>
+        <action android:name="com.getpebble.action.app.RECEIVE" />
+    </intent-filter>
+    </receiver>
     </application>
+    <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
 
 </manifest>
