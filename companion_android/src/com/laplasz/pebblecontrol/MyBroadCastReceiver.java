@@ -60,19 +60,26 @@ public class MyBroadCastReceiver extends PebbleDataReceiver {
 	            
 	            if(data.getUnsignedIntegerAsLong(KEY_BUTTON_EVENT) != null) {
 	                int button = data.getUnsignedIntegerAsLong(KEY_BUTTON_EVENT).intValue();
+	                Intent service = new Intent(context, MyAccessibilityService.class);
 	         
 	                switch(button) {
 	                case BUTTON_EVENT_UP:
 	                    //The UP button was pressed
 	                	Toast.makeText(context, "UP!", Toast.LENGTH_LONG).show();
+	                	service.putExtra("control", BUTTON_EVENT_UP);
+	            		context.startService(service);
 	                    break;
 	                case BUTTON_EVENT_DOWN:
 	                    //The DOWN button was pressed
 	                	Toast.makeText(context, "DOWN!", Toast.LENGTH_LONG).show();
+	                	service.putExtra("control", BUTTON_EVENT_DOWN);
+	            		context.startService(service);
 	                    break;
 	                case BUTTON_EVENT_SELECT:
 	                    //The SELECT button was pressed
 	                	Toast.makeText(context, "SELECT!", Toast.LENGTH_LONG).show();
+	                	service.putExtra("control", BUTTON_EVENT_SELECT);
+	            		context.startService(service);
 	                    break;
 	                }
 	            }
