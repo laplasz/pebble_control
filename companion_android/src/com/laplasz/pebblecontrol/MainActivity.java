@@ -9,8 +9,12 @@ import com.getpebble.android.kit.util.PebbleDictionary;
 import com.laplasz.pebblecontrol.R;
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 
@@ -38,6 +42,16 @@ public class MainActivity extends Activity {
     	tAllDevice.setText("Pebble is " + (connected ? "connected" : "not connected"));
 		Log.i(getLocalClassName(), "Pebble is " + (connected ? "connected" : "not connected"));
 		PebbleKit.startAppOnPebble(getApplicationContext(), PEBBLE_APP_UUID);
+		
+		Button button = (Button)findViewById(R.id.button1);
+		button.setOnClickListener(new View.OnClickListener() {
+		    @Override
+		    public void onClick(View v) {
+		    	Editor editor = getSharedPreferences(MyAccessibilityService.APP_PREF, MODE_PRIVATE).edit();
+		    	editor.putString(MyAccessibilityService.PREF_CURRENT_NODE_POS, "");
+				editor.commit();
+		    }
+		});
 		
 		mReceiver = new PebbleDataReceiver(PEBBLE_APP_UUID) {
 			 
