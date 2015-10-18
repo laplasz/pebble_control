@@ -27,6 +27,9 @@ public class MyAccessibilityService extends AccessibilityService  {
 	
 	public static final String PREF_CURRENT_NODE_POS = "pref_current_node_pos";
 	public static final String APP_PREF = "app_pref";
+	String cur_level = null;
+	boolean foundNode = false;
+	boolean foundNext = false;
 	
 	@Override
 	public void onCreate() {
@@ -39,20 +42,27 @@ public class MyAccessibilityService extends AccessibilityService  {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.d("service", "started");
+		if (intent == null) {
+			return Service.START_STICKY;
+		}
 		Bundle extras = intent.getExtras();
 		Integer value = -1;
 		if (extras != null) {
 		    value = extras.getInt("control");
 		}
 		AccessibilityNodeInfo node = getRootInActiveWindow();
-		
+		if (node == null) {
+			Log.d("service","perhaps no permission to get Accesibility info");
+			
+		}
 		/*for (int i = 0; i < node.getChildCount(); i++) {
 			Log.d("root child: "+Integer.toString(i), node.getChild(i).toString());
 			Log.d("root child childcount: ", Integer.toString(node.getChild(i).getChildCount()));
 		}
 		
+		List<AccessibilityNodeInfo> nodes = null;
 		if(node != null) {
-			List<AccessibilityNodeInfo> nodes = node.findAccessibilityNodeInfosByViewId("com.laplasz.pebblecontrol:id/button1");
+			nodes = node.findAccessibilityNodeInfosByViewId("com.laplasz.pebblecontrol:id/button1");
 		Log.d("button1 ciled count", Integer.toString(nodes.get(0).getChildCount()));
 		}*/
 		
@@ -76,14 +86,28 @@ public class MyAccessibilityService extends AccessibilityService  {
 		
 		switch(value) {
             case BUTTON_EVENT_UP:
-                //The UP button was pressed
-            	AccessibilityNodeInfo node1 = NextFocusAbleChild();
-            	if(node1 != null) {
-            		node1.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS);
-            		Log.d("Accesibily done on ", node1.toString());
+            	AccessibilityNodeInfo root = getRootInActiveWindow();
+            	SharedPreferences pref = this.getSharedPreferences(APP_PREF, MODE_PRIVATE);
+        		Editor editor = pref.edit();
+        		cur_level = pref.getString(PREF_CURRENT_NODE_POS, "0_0");
+        		Log.d("saved node: ",cur_level);
+            	//AccessibilityNodeInfo node1 = root.findAccessibilityNodeInfosByViewId("com.laplasz.pebblecontrol:id/button1").get(0);
+            	//Log.d("Click done on button", node1.toString());
+        		nodetraversal(root,"0");
+            	if(foundNext) {
+            	    editor.putString(PREF_CURRENT_NODE_POS, cur_level);
             	} else {
-            		Log.d("Accesibiliy done on ", "not!");
+            		editor.putString(PREF_CURRENT_NODE_POS, "0_0");
             	}
+        		editor.commit();
+        		foundNode = false;
+        		foundNext = false;
+        	    //The UP button was pressed
+            	//AccessibilityNodeInfo node1 = NextFocusAbleChild();
+            	//
+            	//node.getChild(0);
+            	//node = node.findFocus(AccessibilityNodeInfo.FOCUS_ACCESSIBILITY);
+            	
                 break;
             case BUTTON_EVENT_DOWN:
                 //The DOWN button was pressed
@@ -114,6 +138,36 @@ public class MyAccessibilityService extends AccessibilityService  {
 		
 	}
 	
+	private void nodetraversal(AccessibilityNodeInfo node1, String level) {
+        Log.d("Curr Level:",level);
+        String nextNode = "";
+		for(int i = 0; i < node1.getChildCount() && !foundNext; i++ ) {
+			nextNode = level+"_"+Integer.toString(i);
+			Log.d("Next node "+nextNode,node1.getChild(i).toString());
+			
+			
+			if (foundNode && node1.getChild(i).isClickable()) {
+				if (!foundNext) {
+				node1.getChild(i).performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS);
+				Log.d("found clickable!", nextNode);
+				foundNext = true;
+				cur_level = nextNode;
+				return;
+				} else {
+					Log.d("found clickable again, not returned!", nextNode);
+				}
+			}
+			
+			if (cur_level.equals(nextNode)) {
+				foundNode = true;
+				Log.d("Found last node!", nextNode);
+			}
+			if(node1.getChild(i).getChildCount() > 0) {
+				nodetraversal(node1.getChild(i), nextNode);
+			}
+		}
+	}
+	
 	private AccessibilityNodeInfo NextFocusAbleChild() {
 		
 		SharedPreferences pref = this.getSharedPreferences(APP_PREF, MODE_PRIVATE);
@@ -122,13 +176,20 @@ public class MyAccessibilityService extends AccessibilityService  {
 		Log.d("saved string"," "+posString);
 		String [] pos = TextUtils.split(posString, ";");
 		AccessibilityNodeInfo node = getRootInActiveWindow();
+		if (node == null) {
+			Log.d("nextFocusableChind","root node null");
+			return null;
+		}
 		//node = node.getChild(0);
 		//node.recycle();
 		//Log.d("root node 0. cihlder 8 child", node.getChild(0).getChild(8).toString());
 		//check node is exist
 		//pocs
 		//FIXME getchild come back with root if overindexed
-		for (int i = 0; i < pos.length && node.getChild(Integer.parseInt(pos[i])) != null; i++) {
+		
+		
+		
+		for (int i = 0; i < pos.length && Integer.parseInt(pos[i]) < node.getChildCount(); i++) {
 			
 			if(node.getChild(Integer.parseInt(pos[i])) == null) {
 				pos = new String[0];

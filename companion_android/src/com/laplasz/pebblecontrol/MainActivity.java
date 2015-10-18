@@ -47,6 +47,7 @@ public class MainActivity extends Activity {
 		button.setOnClickListener(new View.OnClickListener() {
 		    @Override
 		    public void onClick(View v) {
+		    	Log.d("main activity","button pressed");
 		    	Editor editor = getSharedPreferences(MyAccessibilityService.APP_PREF, MODE_PRIVATE).edit();
 		    	editor.putString(MyAccessibilityService.PREF_CURRENT_NODE_POS, "");
 				editor.commit();
@@ -87,10 +88,23 @@ public class MainActivity extends Activity {
 	}
 	
 	@Override
+	public void onResume() {
+		super.onResume();
+		Log.d("app","onREsume");
+	}
+	
+	@Override
+	public void onPause() {
+		super.onResume();
+		Log.d("app","onPause");
+	}
+	
+	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		PebbleKit.closeAppOnPebble(getApplicationContext(), PEBBLE_APP_UUID);
 		unregisterReceiver(mReceiver);
+		Log.d("app","onDestroy");
 	}
 
 }
