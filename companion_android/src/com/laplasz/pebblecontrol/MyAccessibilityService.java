@@ -93,15 +93,19 @@ public class MyAccessibilityService extends AccessibilityService  {
         		Log.d("saved node: ",cur_level);
             	//AccessibilityNodeInfo node1 = root.findAccessibilityNodeInfosByViewId("com.laplasz.pebblecontrol:id/button1").get(0);
             	//Log.d("Click done on button", node1.toString());
-        		nodetraversal(root,"0");
-            	if(foundNext) {
-            	    editor.putString(PREF_CURRENT_NODE_POS, cur_level);
-            	} else {
-            		editor.putString(PREF_CURRENT_NODE_POS, "0_0");
-            	}
-        		editor.commit();
         		foundNode = false;
         		foundNext = false;
+        		nodetraversal(root,"0");
+            	if(!foundNext) {
+            	  cur_level = "0_0";
+            	  //perhaps the end of the travelsal or if !foundNode then other app - both case start again
+            	  foundNode = false;
+              	  foundNext = false;
+            	  nodetraversal(root,"0");
+            	  
+            	}
+            	editor.putString(PREF_CURRENT_NODE_POS, cur_level);
+        		editor.commit();
         	    //The UP button was pressed
             	//AccessibilityNodeInfo node1 = NextFocusAbleChild();
             	//
@@ -141,20 +145,23 @@ public class MyAccessibilityService extends AccessibilityService  {
 	private void nodetraversal(AccessibilityNodeInfo node1, String level) {
         Log.d("Curr Level:",level);
         String nextNode = "";
+        AccessibilityNodeInfo nextNode1;
+        
 		for(int i = 0; i < node1.getChildCount() && !foundNext; i++ ) {
+			nextNode1 = node1.getChild(i);
 			nextNode = level+"_"+Integer.toString(i);
-			Log.d("Next node "+nextNode,node1.getChild(i).toString());
+			Log.d("Next node "+nextNode,nextNode1.toString());
 			
 			
-			if (foundNode && node1.getChild(i).isClickable()) {
+			if (foundNode && nextNode1.isClickable() && nextNode1.isFocusable()) {
 				if (!foundNext) {
-				node1.getChild(i).performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS);
-				Log.d("found clickable!", nextNode);
-				foundNext = true;
-				cur_level = nextNode;
-				return;
+				  nextNode1.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS);
+				  Log.d("found clickable!", nextNode);
+				  foundNext = true;
+				  cur_level = nextNode;
+				  return;
 				} else {
-					Log.d("found clickable again, not returned!", nextNode);
+				  Log.d("found clickable again, not returned!", nextNode);
 				}
 			}
 			
@@ -162,8 +169,8 @@ public class MyAccessibilityService extends AccessibilityService  {
 				foundNode = true;
 				Log.d("Found last node!", nextNode);
 			}
-			if(node1.getChild(i).getChildCount() > 0) {
-				nodetraversal(node1.getChild(i), nextNode);
+			if(nextNode1.getChildCount() > 0) {
+				nodetraversal(nextNode1, nextNode);
 			}
 		}
 	}
