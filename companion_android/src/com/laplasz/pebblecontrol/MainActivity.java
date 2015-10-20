@@ -9,6 +9,7 @@ import com.getpebble.android.kit.util.PebbleDictionary;
 import com.laplasz.pebblecontrol.R;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -48,9 +49,9 @@ public class MainActivity extends Activity {
 		    @Override
 		    public void onClick(View v) {
 		    	Log.d("main activity","button pressed");
-		    	Editor editor = getSharedPreferences(MyAccessibilityService.APP_PREF, MODE_PRIVATE).edit();
-		    	editor.putString(MyAccessibilityService.PREF_CURRENT_NODE_POS, "");
-				editor.commit();
+		    	Intent dialogIntent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+		    	dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		    	startActivityForResult(dialogIntent, 1);
 		    }
 		});
 		

@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.webkit.WebView.FindListener;
+import android.widget.Toast;
 
 public class MyAccessibilityService extends AccessibilityService  {
 
@@ -53,8 +54,11 @@ public class MyAccessibilityService extends AccessibilityService  {
 		AccessibilityNodeInfo node = getRootInActiveWindow();
 		if (node == null) {
 			Log.d("service","perhaps no permission to get Accesibility info");
-			
+			Toast.makeText(this, "No permission", Toast.LENGTH_LONG).show();
+			stopSelf();
+			return Service.START_STICKY;
 		}
+		node.getPackageName();
 		/*for (int i = 0; i < node.getChildCount(); i++) {
 			Log.d("root child: "+Integer.toString(i), node.getChild(i).toString());
 			Log.d("root child childcount: ", Integer.toString(node.getChild(i).getChildCount()));
@@ -83,13 +87,15 @@ public class MyAccessibilityService extends AccessibilityService  {
 		}
 		node = getRootInActiveWindow();*/
 		//Log.d("child count of root: "," "+Integer.toString(node.getChildCount()));		
-		
+		SharedPreferences pref = this.getSharedPreferences(APP_PREF, MODE_PRIVATE);
+		cur_level = pref.getString(PREF_CURRENT_NODE_POS, "0_0");
+		AccessibilityNodeInfo root = getRootInActiveWindow();
 		switch(value) {
             case BUTTON_EVENT_UP:
-            	AccessibilityNodeInfo root = getRootInActiveWindow();
-            	SharedPreferences pref = this.getSharedPreferences(APP_PREF, MODE_PRIVATE);
+            	
+            	
         		Editor editor = pref.edit();
-        		cur_level = pref.getString(PREF_CURRENT_NODE_POS, "0_0");
+        		
         		Log.d("saved node: ",cur_level);
             	//AccessibilityNodeInfo node1 = root.findAccessibilityNodeInfosByViewId("com.laplasz.pebblecontrol:id/button1").get(0);
             	//Log.d("Click done on button", node1.toString());
@@ -114,12 +120,22 @@ public class MyAccessibilityService extends AccessibilityService  {
             	
                 break;
             case BUTTON_EVENT_DOWN:
-                //The DOWN button was pressed
-            	if(node.getChild(2) != null && node.getChild(2).isClickable()) {
-            		node.getChild(2).performAction(AccessibilityNodeInfo.ACTION_CLICK);
-            		Log.d("Click done on ", node.getChild(2).toString());
+            	String [] pos = TextUtils.split(cur_level, "_");
+            	//skip first level
+            	for (int i = 1; i < pos.length && root != null; i++ ) {
+            		root=root.getChild(Integer.parseInt(pos[i]));
+            	}
+            	if (root != null) {
+            		if(root.isClickable()) {
+            			Log.d("Click done on ", root.toString());
+            			root.performAction(AccessibilityNodeInfo.ACTION_CLICK);
+            		}
+            		if (root.isScrollable()) {
+            			Log.d("Scroll done on ", root.toString());
+            			root.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+            		}
             	} else {
-            		Log.d("Click done on ", "not!");
+            		Log.d("Node ", "not found");
             	}
                 break;
             case BUTTON_EVENT_SELECT:
@@ -150,13 +166,11 @@ public class MyAccessibilityService extends AccessibilityService  {
 		for(int i = 0; i < node1.getChildCount() && !foundNext; i++ ) {
 			nextNode1 = node1.getChild(i);
 			nextNode = level+"_"+Integer.toString(i);
-			Log.d("Next node "+nextNode,nextNode1.toString());
 			
-			
-			if (foundNode && nextNode1.isClickable() && nextNode1.isFocusable()) {
+			if (foundNode && (nextNode1.isClickable() || nextNode1.isScrollable() )) {
 				if (!foundNext) {
 				  nextNode1.performAction(AccessibilityNodeInfo.ACTION_ACCESSIBILITY_FOCUS);
-				  Log.d("found clickable!", nextNode);
+				  Log.d("found clickable!", nextNode+nextNode1.toString());
 				  foundNext = true;
 				  cur_level = nextNode;
 				  return;
