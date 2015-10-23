@@ -22,6 +22,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:focusable="true"
-            android:text="Button2" />
+            android:text="Share code" />
 
 </LinearLayout>

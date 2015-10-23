@@ -1,6 +1,7 @@
 package com.laplasz.pebblecontrol;
 
 
+import java.io.IOException;
 import java.util.UUID;
 
 import com.getpebble.android.kit.PebbleKit;
@@ -11,12 +12,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 
 public class MainActivity extends Activity {
@@ -31,6 +34,10 @@ public class MainActivity extends Activity {
     BUTTON_EVENT_SELECT = 3;
 	
 	TextView tAllDevice;
+	
+	GoogleCloudMessaging gcm;
+    String regid;
+    String PROJECT_NUMBER = " 496352229871";
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,21 @@ public class MainActivity extends Activity {
 		    	Intent dialogIntent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
 		    	dialogIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		    	startActivityForResult(dialogIntent, 1);
+		    }
+		});
+		
+		button = (Button)findViewById(R.id.button2);
+		button.setOnClickListener(new View.OnClickListener() {
+		    @Override
+		    public void onClick(View v) {
+		    	getRegId();
+		    	Log.d("main activity","button pressed");
+		    	Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND); 
+				sharingIntent.setType("text/plain");
+				String shareBody = "Here is the share content body";
+				sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+				sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+				startActivityForResult(Intent.createChooser(sharingIntent, "Share via"),2);
 		    }
 		});
 		
@@ -87,6 +109,34 @@ public class MainActivity extends Activity {
 	    PebbleKit.registerReceivedDataHandler(this, mReceiver);
 
 	}
+	
+	
+	public void getRegId() {
+        new AsyncTask<Void, Void, String>() {
+            @Override
+            protected String doInBackground(Void... params) {
+                String msg = "";
+                try {
+                    if (gcm == null) {
+                        gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
+                    }
+                    regid = gcm.register(PROJECT_NUMBER);
+                    msg = "Device registered, registration ID=" + regid;
+                    Log.i("GCM",  msg);
+
+                } catch (IOException ex) {
+                    msg = "Error :" + ex.getMessage();
+
+                }
+                return msg;
+            }
+
+            @Override
+            protected void onPostExecute(String msg) {
+            	tAllDevice.setText(msg + "\n");
+            }
+        }.execute(null, null, null);
+    }
 	
 	@Override
 	public void onResume() {
