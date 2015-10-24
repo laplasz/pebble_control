@@ -17,7 +17,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 import android.webkit.WebView.FindListener;
 import android.widget.Toast;
 
-public class MyAccessibilityService extends AccessibilityService  {
+public class MyAccessibilityService extends AccessibilityService {
 
 	private static final int
     KEY_BUTTON_EVENT = 0,

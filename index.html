@@ -21,6 +21,16 @@
   <body>
     <!--Add a button for the user to click to initiate auth sequence -->
     <button id="authorize-button" style="visibility: hidden">Authorize</button>
+    <p>Enter some text in the fields below, then press the "Submit form" button to submit the form.</p>
+
+    <form id="myForm" action="https://gcm-http.googleapis.com/gcm/send" 
+          method="post"
+          enctype="application/json">
+      First name: <input type="text" name="fname"><br>
+      Last name: <input type="text" name="lname"><br><br>
+      <input type="button" onclick="myFunction()" value="Submit form">
+    </form>
+
     <script type="text/javascript">
       // Enter a client ID for a web application from the Google Developer Console.
       // The provided clientId will only work if the sample is run directly from
@@ -74,6 +84,9 @@
           });
         });
       }
+    function myFunction() {
+       document.getElementById("myForm").submit();
+    }
     </script>
     <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>
     <div id="content"></div>

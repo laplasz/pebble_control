@@ -70,7 +70,7 @@ public class MainActivity extends Activity {
 		    	Log.d("main activity","button pressed");
 		    	Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND); 
 				sharingIntent.setType("text/plain");
-				String shareBody = "Here is the share content body";
+				String shareBody = (String) tAllDevice.getText();
 				sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
 				sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
 				startActivityForResult(Intent.createChooser(sharingIntent, "Share via"),2);

@@ -60,6 +60,7 @@ public class MyBroadCastReceiver extends PebbleDataReceiver {
 	            
 	            if(data.getUnsignedIntegerAsLong(KEY_BUTTON_EVENT) != null) {
 	                int button = data.getUnsignedIntegerAsLong(KEY_BUTTON_EVENT).intValue();
+	                MyGcmReceiver.sendNotification(context);
 	                startService(context, button);
 	            }
 	            
@@ -69,6 +70,7 @@ public class MyBroadCastReceiver extends PebbleDataReceiver {
 	        }
 	    } else if(intent.getAction().equals("com.laplasz.pebblecontrol.intent.RECEIVE")) {
 	    	int button = intent.getIntExtra("button", -1);
+	    	 MyGcmReceiver.sendNotification(context);
 	    	startService(context, button);
 	    }
 	}
