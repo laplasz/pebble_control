@@ -32,25 +32,20 @@
     android:resource="@xml/accessibility_service_config" />
       
     </service>
-    <receiver android:name=".MyBroadCastReceiver" >
+    <receiver android:name=".MyBroadCastReceiver" 
+        android:exported="true"
+        android:permission="com.google.android.c2dm.permission.SEND">
     <intent-filter>
         <action android:name="com.getpebble.action.app.RECEIVE" />
         <action android:name="com.laplasz.pebblecontrol.intent.RECEIVE" />
     </intent-filter>
-    </receiver>
-    
-    <receiver
-            android:name=".MyGcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND" >
-            <intent-filter>
+    <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
                 <category android:name="com.laplasz.pebblecontrol" />
-            </intent-filter>
-   </receiver>
-    
-    
+    </intent-filter>
+    </receiver>
+   
     </application>
     <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />

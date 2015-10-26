@@ -85,7 +85,20 @@
         });
       }
     function myFunction() {
-       document.getElementById("myForm").submit();
+      // document.getElementById("myForm").submit();
+      var http = new XMLHttpRequest();
+      var url = "https://android.googleapis.com/gcm/send";
+      http.onreadystatechange = function() {
+        if (http.readyState == 4 && http.status == 200) {        
+        // document.getElementById("target").innerHTML =    http.responseText;
+        }
+      }
+   
+      http.open("POST", url, false);
+      http.setRequestHeader("Content-type", "application/json");
+      http.setRequestHeader("Authorization", "key=proper_api_key");
+      var data = '{ "collapse_key": "qcall","time_to_live": 108, "delay_while_idle": true,"data": {"number":"12345678"},"registration_ids":"haho"}';
+      http.send(data);
     }
     </script>
     <script src="https://apis.google.com/js/client.js?onload=handleClientLoad"></script>

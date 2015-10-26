@@ -4,8 +4,13 @@ import java.util.UUID;
 
 import org.json.JSONException;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -60,7 +65,7 @@ public class MyBroadCastReceiver extends PebbleDataReceiver {
 	            
 	            if(data.getUnsignedIntegerAsLong(KEY_BUTTON_EVENT) != null) {
 	                int button = data.getUnsignedIntegerAsLong(KEY_BUTTON_EVENT).intValue();
-	                MyGcmReceiver.sendNotification(context);
+	                sendNotification(context);
 	                startService(context, button);
 	            }
 	            
@@ -70,8 +75,11 @@ public class MyBroadCastReceiver extends PebbleDataReceiver {
 	        }
 	    } else if(intent.getAction().equals("com.laplasz.pebblecontrol.intent.RECEIVE")) {
 	    	int button = intent.getIntExtra("button", -1);
-	    	 MyGcmReceiver.sendNotification(context);
+	    	 sendNotification(context);
 	    	startService(context, button);
+	    } else {
+	    	//from GCM
+	        sendNotification(context);
 	    }
 	}
 	
@@ -101,5 +109,26 @@ private void startService(Context context, int button) {
         break;
     }
 	
+}
+
+static void sendNotification(Context context) {
+    Intent intent = new Intent();
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+    PendingIntent pendingIntent = PendingIntent.getActivity(context, 0 /* Request code */, intent,
+            PendingIntent.FLAG_ONE_SHOT);
+
+    Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+    NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
+            .setSmallIcon(R.drawable.ic_launcher)
+            .setContentTitle("GCM Message")
+            .setContentText("hali")
+            .setAutoCancel(true)
+            .setSound(defaultSoundUri)
+            .setContentIntent(pendingIntent);
+
+    NotificationManager notificationManager =
+            (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+    notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
 }
 }
