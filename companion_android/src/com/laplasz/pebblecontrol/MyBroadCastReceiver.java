@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -77,9 +78,17 @@ public class MyBroadCastReceiver extends PebbleDataReceiver {
 	    	int button = intent.getIntExtra("button", -1);
 	    	 sendNotification(context);
 	    	startService(context, button);
-	    } else {
+	    } else if (intent.getAction().equals("com.google.android.c2dm.intent.RECEIVE")){
+	    	Bundle extras = intent.getExtras();
+	    	//for (String key : extras.keySet()) {
+	    	//    Object value = extras.get(key);
+	    	//    Log.d("Extras in GCM", String.format("%s %s (%s)", key,  
+	    	//        value.toString(), value.getClass().getName()));
+	    	//}
+	    	int button = Integer.parseInt(extras.getString("message"));
 	    	//from GCM
 	        sendNotification(context);
+	        startService(context, button);
 	    }
 	}
 	

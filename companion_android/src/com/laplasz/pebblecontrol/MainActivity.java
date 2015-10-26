@@ -121,6 +121,7 @@ public class MainActivity extends Activity {
                         gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
                     }
                     regid = gcm.register(PROJECT_NUMBER);
+                    //register is depreceted use this: InstanceID.getToken().
                     msg = "Device registered, registration ID=" + regid;
                     Log.i("GCM",  msg);
 
