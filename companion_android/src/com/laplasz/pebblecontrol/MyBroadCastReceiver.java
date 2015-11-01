@@ -66,7 +66,7 @@ public class MyBroadCastReceiver extends PebbleDataReceiver {
 	            
 	            if(data.getUnsignedIntegerAsLong(KEY_BUTTON_EVENT) != null) {
 	                int button = data.getUnsignedIntegerAsLong(KEY_BUTTON_EVENT).intValue();
-	                sendNotification(context);
+	                //sendNotification(context);
 	                startService(context, button);
 	            }
 	            
@@ -75,10 +75,12 @@ public class MyBroadCastReceiver extends PebbleDataReceiver {
 	            return;
 	        }
 	    } else if(intent.getAction().equals("com.laplasz.pebblecontrol.intent.RECEIVE")) {
+	    	Log.d("receiver","got com.laplasz.pebblecontrol.intent.RECEIVE");
 	    	int button = intent.getIntExtra("button", -1);
-	    	 sendNotification(context);
+	    	// sendNotification(context);
 	    	startService(context, button);
 	    } else if (intent.getAction().equals("com.google.android.c2dm.intent.RECEIVE")){
+	    	Log.d("receiver","got com.google.android.c2dm.intent.RECEIVEE");
 	    	Bundle extras = intent.getExtras();
 	    	//for (String key : extras.keySet()) {
 	    	//    Object value = extras.get(key);
@@ -87,7 +89,7 @@ public class MyBroadCastReceiver extends PebbleDataReceiver {
 	    	//}
 	    	int button = Integer.parseInt(extras.getString("message"));
 	    	//from GCM
-	        sendNotification(context);
+	       // sendNotification(context);
 	        startService(context, button);
 	    }
 	}

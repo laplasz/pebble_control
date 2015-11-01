@@ -7,8 +7,16 @@
 // to Android device (will be
 // accessible via intent extras)
 //------------------------------
+$control = '-1';
 
-$data = array( 'message' => '1' );
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if (empty($_POST["control"])) {
+     echo "control required";
+   } else {
+     $control = $_POST["control"];
+      
+   }
+$data = array( "message" => $control );
 
 //------------------------------
 // The recipient registration IDs
@@ -26,7 +34,7 @@ $ids = array( 'APA91bEnqaHJARYKiXfDiijHXZRIxZImTro8LtKUa55YCKnN9y-1WXLlFt6mwBk8Y
 //------------------------------
 
 sendGoogleCloudMessage(  $data, $ids );
-
+}
 //------------------------------
 // Define custom GCM function
 //------------------------------
@@ -138,7 +146,7 @@ function sendGoogleCloudMessage( $data, $ids )
 ?>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <input type="hidden" name="control" value="1">
-<input type="submit" name="submit" value="UP">
+<input type="submit" name="submit" value="Up">
 </form>
 <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 <input type="hidden" name="control" value="2">

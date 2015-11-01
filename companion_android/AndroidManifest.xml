@@ -34,9 +34,7 @@
     android:resource="@xml/accessibility_service_config" />
       
     </service>
-    <receiver android:name=".MyBroadCastReceiver" 
-        android:exported="true"
-        android:permission="com.google.android.c2dm.permission.SEND">
+    <receiver android:name=".MyBroadCastReceiver">
     <intent-filter>
         <action android:name="com.getpebble.action.app.RECEIVE" />
         <action android:name="com.laplasz.pebblecontrol.intent.RECEIVE" />
@@ -51,3 +49,6 @@
     </application>
    
 </manifest>
+ 
+       <!--   android:exported="true"
+        android:permission="com.google.android.c2dm.permission.SEND"-->
