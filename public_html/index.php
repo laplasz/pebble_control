@@ -12,6 +12,7 @@ gcm_id: <input type"text" name="gcm_id"/><br/>
 <input type="button" name="up" value="up" onclick="DoSubmit(1)"/>
 <input type="button" name="down" value="down" onclick="DoSubmit(2)"/>
 <input type="button" name="select" value="select" onclick="DoSubmit(3)"/>
+<input type="button" name="back" value="back" onclick="DoSubmit(4)"/>
 <input type="hidden" name="control">
 </form>
 <script>
