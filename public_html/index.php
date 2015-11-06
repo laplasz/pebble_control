@@ -6,19 +6,22 @@
 </head>
 <body>
 <p>Control your phone..</p>
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-<input type="hidden" name="control" value="1">
-<input type="submit" name="submit" value="Up">
+
+<form name="send_gcm" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+gcm_id: <input type"text" name="gcm_id"/><br/>
+<input type="button" name="up" value="up" onclick="DoSubmit(1)"/>
+<input type="button" name="down" value="down" onclick="DoSubmit(2)"/>
+<input type="button" name="select" value="select" onclick="DoSubmit(3)"/>
+<input type="hidden" name="control">
 </form>
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-<input type="hidden" name="control" value="2">
-<input type="submit" name="submit" value="Down">
-</form>
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-<input type="hidden" name="control" value="3">
-<input type="submit" name="submit" value="Select">
-</form>
-</body>
+<script>
+function DoSubmit(control) {
+
+   var form = document.forms['send_gcm'];
+   form.control.value = control;
+   form.submit();
+}
+</script>
 </html>
 <?php
 //------------------------------
@@ -35,6 +38,9 @@ if (empty($_POST["control"])) {
      $control = $_POST["control"];
       
    }
+$gcm_id = $_POST["gcm_id"];
+
+
 $data = array( "message" => $control );
 
 //------------------------------
@@ -47,6 +53,10 @@ $data = array( "message" => $control );
 //------------------------------
 
 $ids = array( 'APA91bEAlnWM45lx-xZ1MTFctwL9hiwg-68kJMbp73yUXsNSE86-oqqN3tAWvHFsqURrTRLcchFekMpgWNDir7GuGKGKriorv4vZTbEKCGHwd1MJe-aWb2g5oDIDpaVJhDBZhilkEuN0');
+
+if ($gcm_id != "") {
+$ids = array( $gcm_id );
+}
 
 //------------------------------
 // Call our custom GCM function
