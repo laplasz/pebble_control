@@ -1,6 +1,25 @@
 <html>
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Phone Control</title>
+</head>
 <body>
-<p>hali</p>
+<p>Control your phone..</p>
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+<input type="hidden" name="control" value="1">
+<input type="submit" name="submit" value="Up">
+</form>
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+<input type="hidden" name="control" value="2">
+<input type="submit" name="submit" value="Down">
+</form>
+<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+<input type="hidden" name="control" value="3">
+<input type="submit" name="submit" value="Select">
+</form>
+</body>
+</html>
 <?php
 //------------------------------
 // Payload data you want to send 
@@ -27,7 +46,7 @@ $data = array( "message" => $control );
 // http://developer.android.com/google/gcm/
 //------------------------------
 
-$ids = array( 'APA91bEnqaHJARYKiXfDiijHXZRIxZImTro8LtKUa55YCKnN9y-1WXLlFt6mwBk8YsaHHJxdkBHdEkgpgGIyEZ1HRbxyD73H2Cf611gRi8c6raZjnr-4dgGePKUpU2D7diaq0q1NCs6C');
+$ids = array( 'APA91bEAlnWM45lx-xZ1MTFctwL9hiwg-68kJMbp73yUXsNSE86-oqqN3tAWvHFsqURrTRLcchFekMpgWNDir7GuGKGKriorv4vZTbEKCGHwd1MJe-aWb2g5oDIDpaVJhDBZhilkEuN0');
 
 //------------------------------
 // Call our custom GCM function
@@ -109,6 +128,7 @@ function sendGoogleCloudMessage( $data, $ids )
     // Disabling SSL Certificate support temporarly
     curl_setopt( $ch, CURLOPT_SSL_VERIFYHOST, 0 );
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4 );
     //------------------------------
     // Set post data as JSON
     //------------------------------
@@ -118,10 +138,9 @@ function sendGoogleCloudMessage( $data, $ids )
     //------------------------------
     // Actually send the push!
     //------------------------------
-
-    echo "Sending:";
+   
     $result = curl_exec( $ch );
-    echo $result;
+    
     //------------------------------
     // Error? Display it!
     //------------------------------
@@ -144,14 +163,4 @@ function sendGoogleCloudMessage( $data, $ids )
     echo $result;
 }
 ?>
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-<input type="hidden" name="control" value="1">
-<input type="submit" name="submit" value="Up">
-</form>
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
-<input type="hidden" name="control" value="2">
-<input type="submit" name="submit" value="Select">
-</form>
-</body>
-</html>
 
