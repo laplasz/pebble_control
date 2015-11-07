@@ -75,7 +75,7 @@ public class MyAccessibilityService extends AccessibilityService {
 		AccessibilityNodeInfo node;
 		switch(value) {
             case BUTTON_EVENT_UP:
-            	
+            	Toast.makeText(this, "UP", Toast.LENGTH_LONG).show();	
             	
         		Editor editor = pref.edit();
         		
@@ -103,6 +103,7 @@ public class MyAccessibilityService extends AccessibilityService {
             	
                 break;
             case BUTTON_EVENT_DOWN:
+            	Toast.makeText(this, "DOWN", Toast.LENGTH_LONG).show();	
             	node = getStoredNode();
             	if (node != null) {
             	node.performAction(AccessibilityNodeInfo.ACTION_CLICK);
@@ -112,6 +113,7 @@ public class MyAccessibilityService extends AccessibilityService {
             	}
                 break;
             case BUTTON_EVENT_SELECT:
+            	Toast.makeText(this, "SELECT", Toast.LENGTH_LONG).show();	
             	SharedPreferences db_control = this.getSharedPreferences(APP_DB_CONTROL, MODE_PRIVATE);
             	if (mode == "select") {
             	node = getStoredNode();
@@ -136,9 +138,11 @@ public class MyAccessibilityService extends AccessibilityService {
                 	}
             	}
                 break;
-            case BUTTON_EVENT_BACK:    
+            case BUTTON_EVENT_BACK:
+            	Toast.makeText(this, "BACK", Toast.LENGTH_LONG).show();	
             	boolean result = performGlobalAction(GLOBAL_ACTION_BACK);
            	 Log.d("make back action result: ", Boolean.toString(result));
+           	 break;
             default:
             	Log.d("keyboard","no such");
             	
@@ -200,6 +204,7 @@ public class MyAccessibilityService extends AccessibilityService {
 	@Override
 	public void onInterrupt() {
 		// TODO Auto-generated method stub
+		Log.d("service", "interrupted");
 		
 	}
 	

@@ -67,7 +67,7 @@ public class MyBroadCastReceiver extends PebbleDataReceiver {
 	            if(data.getUnsignedIntegerAsLong(KEY_BUTTON_EVENT) != null) {
 	                int button = data.getUnsignedIntegerAsLong(KEY_BUTTON_EVENT).intValue();
 	                //sendNotification(context);
-	                startService(context, button);
+	                startService1(context, button);
 	            }
 	            
 	        } catch (JSONException e) {
@@ -75,51 +75,36 @@ public class MyBroadCastReceiver extends PebbleDataReceiver {
 	            return;
 	        }
 	    } else if(intent.getAction().equals("com.laplasz.pebblecontrol.intent.RECEIVE")) {
-	    	Log.d("receiver","got com.laplasz.pebblecontrol.intent.RECEIVE");
+	    	
 	    	int button = intent.getIntExtra("button", -1);
+	    	Log.d("receiver","got com.laplasz.pebblecontrol.intent.RECEIVE "+Integer.toString(button));
 	    	// sendNotification(context);
-	    	startService(context, button);
+	    	startService1(context, button);
 	    } else if (intent.getAction().equals("com.google.android.c2dm.intent.RECEIVE")){
-	    	Log.d("receiver","got com.google.android.c2dm.intent.RECEIVEE");
+	    	
 	    	Bundle extras = intent.getExtras();
 	    	//for (String key : extras.keySet()) {
 	    	//    Object value = extras.get(key);
 	    	//    Log.d("Extras in GCM", String.format("%s %s (%s)", key,  
 	    	//        value.toString(), value.getClass().getName()));
 	    	//}
+	    	Log.d("receiver","got com.google.android.c2dm.intent.RECEIVEE "+extras.getString("message"));
 	    	int button = Integer.parseInt(extras.getString("message"));
+	    	
 	    	//from GCM
 	       // sendNotification(context);
-	        startService(context, button);
+	        startService1(context, button);
 	    }
 	}
 	
 	
-private void startService(Context context, int button) {
+private void startService1(Context context, int button) {
 	
 	Intent service = new Intent(context, MyAccessibilityService.class);
+
+    	service.putExtra("control", button);
+		context.startService(service);
     
-    switch(button) {
-    case BUTTON_EVENT_UP:
-        //The UP button was pressed
-    	Toast.makeText(context, "UP!", Toast.LENGTH_LONG).show();
-    	service.putExtra("control", BUTTON_EVENT_UP);
-		context.startService(service);
-        break;
-    case BUTTON_EVENT_DOWN:
-        //The DOWN button was pressed
-    	Toast.makeText(context, "DOWN!", Toast.LENGTH_LONG).show();
-    	service.putExtra("control", BUTTON_EVENT_DOWN);
-		context.startService(service);
-        break;
-    case BUTTON_EVENT_SELECT:
-        //The SELECT button was pressed
-    	Toast.makeText(context, "SELECT!", Toast.LENGTH_LONG).show();
-    	service.putExtra("control", BUTTON_EVENT_SELECT);
-		context.startService(service);
-        break;
-    }
-	
 }
 
 static void sendNotification(Context context) {

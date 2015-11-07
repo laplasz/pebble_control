@@ -1,0 +1,67 @@
+buildscript {
+    repositories {
+        mavenCentral() // or jcenter()
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.3.1'
+    }
+}
+
+apply plugin: 'com.android.application'
+
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
+
+   // defaultConfig {
+   //     minSdkVersion 19
+   //     targetSdkVersion 19
+   //     versionCode 1
+   //     versionName "1.0"
+    //}
+
+    sourceSets {
+        main {
+            manifest.srcFile 'AndroidManifest.xml'
+            java.srcDirs = ['src']
+            resources.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            renderscript.srcDirs = ['src']
+            res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
+        }
+
+    debug.setRoot('build-types/debug')
+    release.setRoot('build-types/release')
+    }
+    signingConfigs {
+        release {
+            storeFile file("release.keystore")
+            storePassword "fosWindows1"
+            keyAlias "keyAlias"
+            keyPassword "fosWindows1"
+        }
+    }
+    
+    buildTypes {
+        release {
+            debuggable true
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable true
+        }
+    }
+}
+
+dependencies {
+
+  /*  compile 'com.android.support:appcompat-v7:19.0.1'*/
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+
