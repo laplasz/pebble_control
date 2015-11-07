@@ -7,7 +7,7 @@
 <body>
 <p>Control your phone..</p>
 
-<form name="send_gcm" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
+<form name="send_gcm" method="get" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">
 gcm_id: <input type"text" name="gcm_id"/><br/>
 <input type="button" name="up" value="up" onclick="DoSubmit(1)"/>
 <input type="button" name="down" value="down" onclick="DoSubmit(2)"/>
@@ -32,14 +32,14 @@ function DoSubmit(control) {
 //------------------------------
 $control = '-1';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-if (empty($_POST["control"])) {
+if ($_SERVER["REQUEST_METHOD"] == "GET") {
+if (empty($_GET["control"])) {
      echo "control required";
    } else {
-     $control = $_POST["control"];
+     $control = $_GET["control"];
       
    }
-$gcm_id = $_POST["gcm_id"];
+$gcm_id = $_GET["gcm_id"];
 
 
 $data = array( "message" => $control );
