@@ -58,6 +58,12 @@ static void window_load(Window *window) {
   text_layer_set_text(text_layer, "Press a button, please");
   text_layer_set_text_alignment(text_layer, GTextAlignmentCenter);
   layer_add_child(window_layer, text_layer_get_layer(text_layer));
+  
+  TextLayer *text_layerTitle = text_layer_create((GRect) { .origin = { 0, 0 }, .size = { bounds.size.w, 25 } });
+  text_layer_set_text(text_layerTitle, "Phone Control");
+  text_layer_set_font(text_layerTitle, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
+  text_layer_set_text_alignment(text_layerTitle, GTextAlignmentCenter);
+  layer_add_child(window_layer, text_layer_get_layer(text_layerTitle));
 }
 
 static void window_unload(Window *window) {
